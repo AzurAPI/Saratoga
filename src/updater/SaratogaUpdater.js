@@ -14,9 +14,9 @@ class SaratogaUpdater {
     // a sync method to avoid accessing files that doesn't exist
     startUpCheck() {
         if (this.checked) return;
-        const props = ['versionFilePath', 'shipFilePath', 'equipFilePath'];
-        for (const prop of props) {
-            if (!SaratogaUtil.existSync(SaratogaUtil[prop]())) SaratogaUtil.writeFileSync(SaratogaUtil[prop](), JSON.stringify({}));
+        if (!SaratogaUtil.existSync(SaratogaUtil.folderDataPath())) SaratogaUtil.createDirectorySync(SaratogaUtil.folderDataPath());
+        for (const prop of ['versionFilePath', 'shipFilePath', 'equipFilePath']) {
+            if (!SaratogaUtil.existSync( SaratogaUtil[prop]() )) SaratogaUtil.writeFileSync(SaratogaUtil[prop](), JSON.stringify({}));
         }
         this.checked = true;
     }
