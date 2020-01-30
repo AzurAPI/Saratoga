@@ -1,15 +1,54 @@
 const { readFile, writeFileSync, existsSync, writeFile, access, constants } = require('fs');
 const { promisify } = require('util');
+const { join } = require('path');
 
 const promise = {
     read: promisify(readFile),
     write: promisify(writeFile),
     access: promisify(access)
 };
+
+const dataFilePath = {
+    ship: join(__dirname, '../data', 'ship.json'),
+    equipment: join(__dirname, '../data', 'equipment.json')
+};
+
+const remoteLinks = {
+    version: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/version-info.json',
+    ships: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/ships.json',
+    equipment: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/equipments.json'
+};
+
+const versionFilePath = join(__dirname, '../data', 'version.json');
+
 /*
  * Sync methods are ONLY to be used at program startup and will never be used while the program is running
  */
 class SaratogaUtil {
+    static versionFilePath() {
+        return versionFilePath;
+    }
+
+    static shipFilePath() {
+        return dataFilePath.ship;
+    }
+
+    static equipFilePath() {
+        return dataFilePath.equipment;
+    }
+
+    static latestVersionDataLink() {
+        return remoteLinks.version;
+    }
+
+    static latestShipDataLink() {
+        return remoteLinks.ships;
+    }
+
+    static latestEquipmentDataLink() {
+        return remoteLinks.equipment;
+    }
+
     static existSync(path) {
         return existsSync(path);
     }

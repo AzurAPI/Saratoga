@@ -1,5 +1,6 @@
 node_modules
 docs
+tests
 .idea
 .gitignore
 .eslintrc.yml
@@ -7,3 +8,4 @@ docs
 .docma.json
 package-lock.json
 README.md
+src/data/*.json

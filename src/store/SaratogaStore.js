@@ -1,13 +1,12 @@
-const SaratogaUtil = require('../util/SaratogaUtil');
+const SaratogaUpdater = require('../updater/SaratogaUpdater');
 
 class SaratogaStore {
     constructor(saratoga) {
         this.saratoga = saratoga;
-        this.checked = false;
-    }
+        this.updater = new SaratogaUpdater(this, saratoga);
 
-    dataStartUpCheck() {
-        if (this.checked) return;
+        Object.defineProperty(this, '_shipCache', { value: [] });
+        Object.defineProperty(this, '_equipCache', { value: [] });
     }
 }
 module.exports = SaratogaStore;
