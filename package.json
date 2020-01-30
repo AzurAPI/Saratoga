@@ -4,7 +4,7 @@
   "description": "Open Source Azur Lane Local Database",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ./tests/Client.js"
   },
   "author": "Deivu",
   "license": "MIT",

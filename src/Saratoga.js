@@ -8,17 +8,22 @@ class Saratoga {
             .catch(console.error);
     }
 
+    get updater() {
+        const { updateDataAndCache, checkForUpdate, updateLocalData, updateCache } = this.store.updater;
+        return { updateDataAndCache, checkForUpdate, updateLocalData, updateCache };
+    }
+
     get ready() {
-        return this.store._isReady;
+        return this.store.ready && this.store.updater.dataDirReady;
     }
 
     get ships() {
-        if (!this.store._isReady) return null;
+        if (!this.ready) return null;
         return this.store.ships;
     }
 
-    get equipments() {
-        if (!this.store._isReady) return null;
+    get equipments() {  
+        if (!this.ready) return null;
         return this.store.equipments;
     }
 }

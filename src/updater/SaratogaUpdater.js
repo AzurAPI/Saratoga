@@ -6,20 +6,25 @@ class SaratogaUpdater {
     constructor(store, saratoga) {
         this.saratoga = saratoga;
         this.store = store;
-        this.checked = false;
+        this.dataDirReady = false;
+        this.startUpCheck();
     }
 
     // a sync method to avoid accessing files that doesn't exist
     startUpCheck() {
-        if (this.checked) return;
+        if (this.dataDirReady) return;
         if (!SaratogaUtil.existSync(SaratogaUtil.folderDataPath())) SaratogaUtil.createDirectorySync(SaratogaUtil.folderDataPath());
         for (const prop of ['versionFilePath', 'shipFilePath', 'equipFilePath']) {
             if (!SaratogaUtil.existSync( SaratogaUtil[prop]() )) SaratogaUtil.writeFileSync(SaratogaUtil[prop](), JSON.stringify({}));
         }
-        this.checked = true;
+        this.dataDirReady = true;
     }
 
-    // used to check for update w/o writing. Example: Use this function first before invoking updateData()
+    async updateDataAndCache() {
+        await this.updateLocalData();
+        await this.updateCache();
+    }
+
     async checkForUpdate() {
         const dataValidator = new SaratogaValidator();
         await dataValidator.fetch(false);
@@ -28,7 +33,7 @@ class SaratogaUpdater {
         return { shipUpdateAvailable, equipmentUpdateAvailable };
     }
 
-    async updateData() {
+    async updateLocalData() {
         const dataValidator = new SaratogaValidator();
         await dataValidator.fetch();
         if (dataValidator.noLocalData()) {
@@ -45,10 +50,13 @@ class SaratogaUpdater {
                 await dataValidator.updateVersionFile();
             }
         }
+    }
+
+    async updateCache() {
         this.store.loadShipsCache(await this.fetchShipsFromLocal());
         this.store.loadEquipmentsCache(await this.fetchEquipmentsFromLocal());
-        console.log(`Loaded ${this.store._shipCache.length} ships from database.`);
-        console.log(`Loaded ${this.store._equipCache.length} equipments from database.`);
+        console.log(`Loaded ${this.store._shipCache.length} ships from ${SaratogaUtil.shipFilePath()}.`);
+        console.log(`Loaded ${this.store._equipCache.length} equipments from ${SaratogaUtil.equipFilePath()}`);
     }
 
     async updateStoredShips() {

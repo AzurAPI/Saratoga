@@ -9,17 +9,16 @@ class SaratogaStore {
         this.ships = new SaratogaShips(this);
         this.equipments = new SaratogaEquipments(this);
         this.updater = new SaratogaUpdater(this, saratoga);
+        this.ready = false;
 
         Object.defineProperty(this, '_shipCache', { value: [], writable: true });
         Object.defineProperty(this, '_equipCache', { value: [], writable: true  });
-        Object.defineProperty(this, '_isReady', { value: false, writable: true  });
     }
 
     async intializeStore() {
-        if (this._isReady) return;
-        this.updater.startUpCheck();
-        await this.updater.updateData();
-        this._isReady = true;
+        if (this.ready) return;
+        await this.updater.updateDataAndCache();
+        this.ready = true;
     }
 
     loadShipsCache(rawShips) {
