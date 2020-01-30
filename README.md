@@ -44,6 +44,3 @@ setTimeout(() => getShip(), 10000);
 
 ## TO DOs
 - Think about implementation for initialization (probs I will let it user invoked or depends)
-- More methods for ship & equipment searching like id etc etc
-- Idk probs you suggest
-- More documentation zzzzzz
