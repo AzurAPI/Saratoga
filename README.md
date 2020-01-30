@@ -4,3 +4,6 @@
 </p>
 
 The ShipGirl Project. Saratoga. ``(c) Azurlane for Saratoga.``
+
+## Features:
+> Soon™️
