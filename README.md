@@ -19,9 +19,11 @@ An Azur Lane Library which is open source, which is inspired by [AzurApi-JS](htt
 
 ## Installation
 
+> npm i saratoga
+
 > npm i Deivu/Saratoga
 
-## Example Usage
+## Basic Example Usage
 ```js
 const { Saratoga } = require('saratoga');
 
