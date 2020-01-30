@@ -1,0 +1,9 @@
+node_modules
+docs
+.idea
+.gitignore
+.eslintrc.yml
+.eslintrc.yml
+.docma.json
+package-lock.json
+README.md
