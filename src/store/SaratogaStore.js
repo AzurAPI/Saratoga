@@ -1,17 +1,25 @@
 const SaratogaUpdater = require('../updater/SaratogaUpdater');
+const SaratogaShips = require('./SaratogaShips');
+const SaratogaEquipments = require('./SaratogaEquipments');
 const SaratogaUtil = require('../util/SaratogaUtil');
 
 class SaratogaStore {
     constructor(saratoga) {
         this.saratoga = saratoga;
+        this.ships = new SaratogaShips(this);
+        this.equipments = new SaratogaEquipments(this);
         this.updater = new SaratogaUpdater(this, saratoga);
-
-        // needs a bit of reimplementation for this next 2 lines
-        this.updater.updateData()
-            .catch(console.error);
 
         Object.defineProperty(this, '_shipCache', { value: [], writable: true });
         Object.defineProperty(this, '_equipCache', { value: [], writable: true  });
+        Object.defineProperty(this, '_isReady', { value: false, writable: true  });
+    }
+
+    async intializeStore() {
+        if (this._isReady) return;
+        this.updater.startUpCheck();
+        await this.updater.updateData();
+        this._isReady = true;
     }
 
     loadShipsCache(rawShips) {

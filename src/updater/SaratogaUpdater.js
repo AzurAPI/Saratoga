@@ -7,8 +7,6 @@ class SaratogaUpdater {
         this.saratoga = saratoga;
         this.store = store;
         this.checked = false;
-
-        this.startUpCheck();
     }
 
     // a sync method to avoid accessing files that doesn't exist
