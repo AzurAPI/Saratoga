@@ -3,7 +3,13 @@ const SaratogaStore = require('./store/SaratogaStore');
 class Saratoga {
     constructor() {
         this.store = new SaratogaStore(this);
-        this.store.intializeStore();
+        // the next two lines may need some adjustments as I see fit.
+        this.store.intializeStore()
+            .catch(console.error);
+    }
+
+    get ready() {
+        return this.store._isReady;
     }
 
     get ships() {

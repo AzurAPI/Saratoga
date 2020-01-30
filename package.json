@@ -1,6 +1,6 @@
 {
   "name": "saratoga",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Open Source Azur Lane Local Database",
   "main": "index.js",
   "scripts": {
@@ -8,8 +8,10 @@
   },
   "author": "Deivu",
   "license": "MIT",
+  "dependencies": {
+    "node-fetch": "latest"
+  },
   "devDependencies": {
-    "node-fetch": "latest",
     "eslint": "^6.8.0"
   }
 }
