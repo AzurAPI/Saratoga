@@ -19,7 +19,7 @@ class SaratogaUpdater {
         }
         this.dataDirReady = true;
     }
-
+    
     async updateDataAndCache() {
         await this.updateLocalData();
         await this.updateCache();
