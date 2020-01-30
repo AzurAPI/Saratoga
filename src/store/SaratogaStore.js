@@ -7,7 +7,7 @@ class SaratogaStore {
         this.updater = new SaratogaUpdater(this, saratoga);
 
         // needs a bit of reimplementation for this next 2 lines
-        this.updater.update()
+        this.updater.updateData()
             .catch(console.error);
 
         Object.defineProperty(this, '_shipCache', { value: [], writable: true });
@@ -30,10 +30,6 @@ class SaratogaStore {
         this._equipCache.length = 0;
     }
 
-    updateVersionFile(data) {
-        return SaratogaUtil.writeFile(SaratogaUtil.versionFilePath, JSON.stringify(data));
-    }
-
     updateShipData(data) {
         return SaratogaUtil.writeFile(SaratogaUtil.shipFilePath, JSON.stringify(data));
     }
@@ -41,11 +37,7 @@ class SaratogaStore {
     updateEquipmentData(data) {
         return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath, JSON.stringify(data));
     }
-
-    clearVersionFile() {
-        return SaratogaUtil.writeFile(SaratogaUtil.versionFilePath, JSON.stringify({}));
-    }
-
+    
     clearShipData() {
         return SaratogaUtil.writeFile(SaratogaUtil.shipFilePath, JSON.stringify({}));
     }

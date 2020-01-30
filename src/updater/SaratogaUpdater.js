@@ -1,3 +1,4 @@
+const Fetch = require('node-fetch');
 const SaratogaUtil = require('../util/SaratogaUtil');
 const SaratogaValidator = require('./SaratogaValidator');
 
@@ -19,18 +20,32 @@ class SaratogaUpdater {
         this.checked = true;
     }
 
-    async update() {
+    // used to check for update w/o writing
+    async checkForUpdate() {
+        const dataValidator = new SaratogaValidator();
+        await dataValidator.fetch(false);
+        const shipUpdateAvailable = dataValidator.setType('ships').needsUpdate();
+        const equipmentUpdateAvailable = dataValidator.setType('equipments').needsUpdate();
+        return { shipUpdateAvailable, equipmentUpdateAvailable };
+    }
+
+    async updateData() {
         const dataValidator = new SaratogaValidator();
         await dataValidator.fetch();
         if (dataValidator.noLocalData()) {
-            // handle clear, reload cache for ships & equips here
+            // handle clear, update, reload cache for ships, equips & version file here
+            await dataValidator.updateVersionFile();
         } else {
             if (dataValidator.setType('ships').needsUpdate()) {
-                // handle clear, reload cache for ships here
+                // clear and update local file here
+                await dataValidator.updateVersionFile();
             }
+            // then reload ship cache here
             if (dataValidator.setType('equipments').needsUpdate()) {
-                // handle clear, reload cache for equip here
+                // clear and update local file here
+                await dataValidator.updateVersionFile();
             }
+            // then reload equipment cache here
         }
     }
 }
