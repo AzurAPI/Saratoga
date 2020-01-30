@@ -14,36 +14,38 @@ class SaratogaStore {
         Object.defineProperty(this, '_equipCache', { value: [], writable: true  });
     }
 
-    loadShipCache() {
-        // soon
+    loadShipsCache(rawShips) {
+        this.clearShipsCache();
+        this._shipCache = Object.values(rawShips);
     }
 
-    loadEquipmentCache() {
-        // soon
+    loadEquipmentsCache(rawEquips) {
+        this.clearEquipmentsCache();
+        this._equipCache = Object.values(rawEquips);
     }
 
-    clearShipCache() {
+    clearShipsCache() {
         this._shipCache.length = 0;
     }
 
-    clearEquipmentCache() {
+    clearEquipmentsCache() {
         this._equipCache.length = 0;
     }
 
-    updateShipData(data) {
-        return SaratogaUtil.writeFile(SaratogaUtil.shipFilePath, JSON.stringify(data));
+    updateShipsData(data) {
+        return SaratogaUtil.writeFile(SaratogaUtil.shipFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
     }
 
-    updateEquipmentData(data) {
-        return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath, JSON.stringify(data));
-    }
-    
-    clearShipData() {
-        return SaratogaUtil.writeFile(SaratogaUtil.shipFilePath, JSON.stringify({}));
+    updateEquipmentsData(data) {
+        return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
     }
 
-    clearEquipmentData() {
-        return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath, JSON.stringify({}));
+    clearShipsData() {
+        return SaratogaUtil.writeFile(SaratogaUtil.shipFilePath(), JSON.stringify({}));
+    }
+
+    clearEquipmentsData() {
+        return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath(), JSON.stringify({}));
     }
 }
 module.exports = SaratogaStore;
