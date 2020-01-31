@@ -7,13 +7,13 @@ class Saratoga {
         this.store.intializeStore()
             .catch(console.error);
     }
-    
+
     get updater() {
         return { 
             updateDataAndCache: this.store.updater.updateDataAndCache, 
             checkForUpdate: this.store.updater.checkForUpdate, 
             updateLocalData: this.store.updater.updateLocalData, 
-            updateCache: this.store.updater.updateLocalData 
+            updateCache: this.store.updater.updateCache 
         };
     }
 
