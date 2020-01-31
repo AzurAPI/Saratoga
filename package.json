@@ -8,6 +8,10 @@
   },
   "author": "Deivu",
   "license": "MIT",
+  "repository": {
+		"type": "git",
+		"url": "https://github.com/AzurAPI/Saratoga"
+	},
   "dependencies": {
     "node-fetch": "latest"
   },

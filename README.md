@@ -21,7 +21,7 @@ An Azur Lane Library which is open source, which is inspired by [AzurApi-JS](htt
 
 > npm i saratoga
 
-> npm i Deivu/Saratoga
+> npm i AzurAPI/Saratoga
 
 ## Documentation
 
@@ -41,6 +41,9 @@ function getShip() {
 
 setTimeout(() => getShip(), 10000);
 ```
+
+## Maintainer
+- [@Saya#0113](https://github.com/Deivu)
 
 ## TO DOs
 - Think about implementation for initialization (probs I will let it user invoked or depends)
