@@ -9,11 +9,12 @@ class Saratoga {
     }
 
     get updater() {
+        const { updateDataAndCache, checkForUpdate, updateLocalData, updateCache } = this.store.updater;
         return { 
-            updateDataAndCache: this.store.updater.updateDataAndCache, 
-            checkForUpdate: this.store.updater.checkForUpdate, 
-            updateLocalData: this.store.updater.updateLocalData, 
-            updateCache: this.store.updater.updateCache 
+            updateDataAndCache: updateDataAndCache.bind(this.store.updater), 
+            checkForUpdate: checkForUpdate.bind(this.store.updater), 
+            updateLocalData: updateLocalData.bind(this.store.updater), 
+            updateCache: updateCache.bind(this.store.updater) 
         };
     }
 
