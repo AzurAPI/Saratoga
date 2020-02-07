@@ -1,11 +1,19 @@
 {
   "name": "saratoga",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Open Source Azur Lane Local Database",
   "main": "index.js",
   "scripts": {
     "test": "node ./tests/Client.js"
   },
+  "keywords": [
+    "api",
+    "azur",
+    "lane",
+    "azur-lane",
+    "saratoga",
+    "library"
+  ],
   "author": "Deivu",
   "license": "MIT",
   "repository": {
