@@ -3,9 +3,8 @@ const SaratogaStore = require('./store/SaratogaStore');
 class Saratoga {
     constructor() {
         this.store = new SaratogaStore(this);
-        // the next two lines may need some adjustments as I see fit.
-        this.store.intializeStore()
-            .catch(console.error);
+        this.store.updater.startUpCheck();
+        this.store.updateOnFirstStartUp();
     }
 
     get updater() {

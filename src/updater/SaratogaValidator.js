@@ -24,15 +24,23 @@ class SaratogaValidator {
         return ['ships', 'equipments'].map(type => this.parseVersion(prop, type));
     }
 
-    async fetch(loggable = true) {
+    getCurrentVersion() {
+        if (!this.fetched) return;
+        const data = {
+            downloaded: {},
+            remote: {}
+        };
+        for (const { type, version } of this.parseShipAndEquipmentVersion('local')) data.downloaded[type] = version;
+        for (const { type, version } of this.parseShipAndEquipmentVersion('remote')) data.remote[type] = version;
+        return data;
+    }
+
+    async fetch() {
         if (!this.fetched) {
             this.local = JSON.parse(await SaratogaUtil.readFile(SaratogaUtil.versionFilePath()));
             this.remote = await Fetch(SaratogaUtil.latestVersionDataLink()).then(data => data.json());
             this.fetched = true;
         }
-        if (!loggable) return;
-        for (const { type, version } of this.parseShipAndEquipmentVersion('local')) console.log(`Current downloaded ${type} version: ${version}`);
-        for (const { type, version } of this.parseShipAndEquipmentVersion('remote')) console.log(`Current remote ${type} version: ${version}`);
     }
 
     noLocalData() {

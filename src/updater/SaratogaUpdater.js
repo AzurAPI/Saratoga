@@ -7,7 +7,6 @@ class SaratogaUpdater {
         this.saratoga = saratoga;
         this.store = store;
         this.dataDirReady = false;
-        this.startUpCheck();
     }
 
     // a sync method to avoid accessing files that doesn't exist
@@ -17,6 +16,8 @@ class SaratogaUpdater {
         for (const prop of ['versionFilePath', 'shipFilePath', 'equipFilePath']) {
             if (!SaratogaUtil.existSync( SaratogaUtil[prop]() )) SaratogaUtil.writeFileSync(SaratogaUtil[prop](), JSON.stringify({}));
         }
+        this.store.loadShipsCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.shipFilePath())));
+        this.store.loadEquipmentsCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.equipFilePath())));
         this.dataDirReady = true;
     }
     
@@ -27,7 +28,7 @@ class SaratogaUpdater {
 
     async checkForUpdate() {
         const dataValidator = new SaratogaValidator();
-        await dataValidator.fetch(false);
+        await dataValidator.fetch();
         const shipUpdateAvailable = dataValidator.setType('ships').needsUpdate();
         const equipmentUpdateAvailable = dataValidator.setType('equipments').needsUpdate();
         return { shipUpdateAvailable, equipmentUpdateAvailable };
@@ -55,8 +56,6 @@ class SaratogaUpdater {
     async updateCache() {
         this.store.loadShipsCache(await this.fetchShipsFromLocal());
         this.store.loadEquipmentsCache(await this.fetchEquipmentsFromLocal());
-        console.log(`Loaded ${this.store._shipCache.length} ships from ${SaratogaUtil.shipFilePath()}.`);
-        console.log(`Loaded ${this.store._equipCache.length} equipments from ${SaratogaUtil.equipFilePath()}`);
     }
 
     async updateStoredShips() {

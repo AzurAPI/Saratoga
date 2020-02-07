@@ -1,4 +1,4 @@
-const { readFile, writeFileSync, existsSync, writeFile, mkdirSync, access, constants } = require('fs');
+const { readFile, readFileSync, writeFile, writeFileSync, existsSync, mkdirSync, access, constants } = require('fs');
 const { promisify } = require('util');
 const { join } = require('path');
 
@@ -70,6 +70,10 @@ class SaratogaUtil {
 
     static readFile(path) {
         return promise.read(path);
+    }
+
+    static readFileSync(path) {
+        return readFileSync(path);
     }
 
     static writeFileSync(path, data) {
