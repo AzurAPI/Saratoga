@@ -1,4 +1,4 @@
-const  Fuse = require('fuse.js');
+const Fuse = require('fuse.js');
 const SaratogaUpdater = require('../updater/SaratogaUpdater');
 const SaratogaShips = require('./SaratogaShips');
 const SaratogaEquipments = require('./SaratogaEquipments');
