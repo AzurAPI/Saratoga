@@ -19,8 +19,8 @@ class SaratogaStore {
         this.updateOnFirstStartUp()
             .then(() => {
                 if (this.saratoga.ready) return;
-                this.ready = true;
                 this.updater._startCronUpdate();
+                this.ready = true;
                 this.saratoga.emit('ready');
             })
             .catch((error) =>
