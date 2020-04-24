@@ -17,10 +17,11 @@
   "author": "Deivu",
   "license": "MIT",
   "repository": {
-		"type": "git",
-		"url": "https://github.com/AzurAPI/Saratoga"
-	},
+    "type": "git",
+    "url": "https://github.com/AzurAPI/Saratoga"
+  },
   "dependencies": {
+    "fuse.js": "^5.2.3",
     "node-fetch": "latest"
   },
   "devDependencies": {

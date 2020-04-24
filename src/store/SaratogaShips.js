@@ -1,46 +1,48 @@
 class SaratogaShips {
     constructor(store) {
-        this.store = store;
+        Object.defineProperty(this, '_store', { value: store, writable: false });
     }
 
     get cache() {
-        return this.store._shipCache;
+        if (!this._store._shipCache) return null;
+        return this._store._shipCache;
+    }
+
+    get rawCache() {
+        if (!this.cache) return null;
+        return this.cache.list;
     }
 
     getAllByClass(shipClass) {
-        return this.cache.filter(d => d.class === shipClass);
+        if (!this.rawCache) return null;
+        return this.rawCache.filter(d => d.class === shipClass);
     }
 
     getAllByNationality(nationality) {
-        return this.cache.filter(d => d.nationality === nationality);
+        if (!this.rawCache) return null;
+        return this.rawCache.filter(d => d.nationality === nationality);
     }
 
     getAllByHullType(hullType) {
-        return this.cache.filter(d => d.hullType === hullType);
+        if (!this.rawCache) return null;
+        return this.rawCache.filter(d => d.hullType === hullType);
     }
 
     getAllByRarity(rarity) {
-        return this.cache.filter(d => d.rarity === rarity);
+        if (!this.rawCache) return null;
+        return this.rawCache.filter(d => d.rarity === rarity);
     }
 
     getById(id) {
-        return this.cache.find(d => d.id === id);
+        if (!this.rawCache) return null;
+        return this.rawCache.find(d => d.id === id);
     }
 
-    getByEnglishName(name) {
-        return this.cache.find(d => d.names.en === name);
-    }
-
-    getByChineseName(name) {
-        return this.cache.find(d => d.names.cn === name);
-    }
-
-    getByJapaneseName(name) {
-        return this.cache.find(d => d.names.jp === name);
-    }
-
-    getByKoreanName(name) {
-        return this.cache.find(d => d.names.kr === name);
+    searchShipByName(name) {
+        if (!this.cache) return null;
+        const possibleShips = this.cache.search(name,  { limit: 10 });
+        if (!possibleShips.length) return null;
+        return possibleShips;
     }
 }
 module.exports = SaratogaShips;

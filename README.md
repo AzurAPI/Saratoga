@@ -9,7 +9,9 @@ An Azur Lane Library which is open source, which is inspired by [AzurApi-JS](htt
 
 ## Features
 
-✅ No complicated Database inside.
+✅ Azur Lane ship & equipment local api.
+
+✅ Really simple database.
 
 ✅ Hot reloading.
 
@@ -25,6 +27,8 @@ An Azur Lane Library which is open source, which is inspired by [AzurApi-JS](htt
 
 ## Documentation
 
+Docma Docs soon:tm:
+
 [Read our Wiki](https://github.com/Deivu/Saratoga/wiki)
 
 ## Basic Example Usage
@@ -33,17 +37,10 @@ const { Saratoga } = require('saratoga');
 
 const saratoga = new Saratoga();
 
-console.log('Will get the ship after 10 seconds we initialize Saratoga');
-
-function getShip() {
-  if (saratoga.ready) console.log(saratoga.ships.getByEnglishName('Saratoga'));
-}
-
-setTimeout(() => getShip(), 10000);
+saratoga.on('ready', () => console.log(saratoga.ships.searchShipByName('saratoga')));
+saratoga.on('debug', console.log);
+saratoga.on('error', console.error);
 ```
 
 ## Maintainer
 - [@Saya#0113](https://github.com/Deivu)
-
-## TO DOs
-- Think about implementation for initialization (probs I will let it user invoked or depends)

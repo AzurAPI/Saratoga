@@ -1,3 +1,4 @@
+const  Fuse = require('fuse.js');
 const SaratogaUpdater = require('../updater/SaratogaUpdater');
 const SaratogaShips = require('./SaratogaShips');
 const SaratogaEquipments = require('./SaratogaEquipments');
@@ -6,43 +7,58 @@ const SaratogaUtil = require('../util/SaratogaUtil');
 class SaratogaStore {
     constructor(saratoga) {
         this.saratoga = saratoga;
-        this.ready = false;
         this.ships = new SaratogaShips(this);
         this.equipments = new SaratogaEquipments(this);
-        this.updater = new SaratogaUpdater(this, saratoga);
+        this.updater = new SaratogaUpdater(this);
+        this.ready = false;
 
-        Object.defineProperty(this, '_shipCache', { value: [], writable: true });
-        Object.defineProperty(this, '_equipCache', { value: [], writable: true  });
+        Object.defineProperty(this, '_shipCache', { value: null, writable: true });
+        Object.defineProperty(this, '_equipCache', { value: null, writable: true  });
+
+        this.updater.startUpCheck();
+        this.updateOnFirstStartUp()
+            .then(() => {
+                if (this.saratoga.ready) return;
+                this.ready = true;
+                this.updater._startCronUpdate();
+                this.saratoga.emit('ready');
+            })
+            .catch((error) =>
+                this.saratoga.emit('error', error)
+            );
     }
 
     async updateOnFirstStartUp() {
         if (this.ready) return;
-        if (!this._shipCache.length || !this._equipCache.length) {
-            console.log('No stored data available, trying to update from remote. Next updates must be done manually.');
-            const update = await this.updater.checkForUpdate();
-            if (update.shipUpdateAvailable || update.equipmentUpdateAvailable) await this.updater.updateDataAndCache();
-        }
-        console.log(`Loaded ${this._shipCache.length} ships from ${SaratogaUtil.shipFilePath()}.`);
-        console.log(`Loaded ${this._equipCache.length} equipments from ${SaratogaUtil.equipFilePath()}`);
-        this.ready = true;
+        let update = await this.updater.checkForUpdate();
+        update = update.shipUpdateAvailable || update.equipmentUpdateAvailable;
+        if (update && (!this._shipCache || !this._equipCache)) await this.updater.updateDataAndCache();
+        this.saratoga.emit('debug', `Loaded ${this._shipCache.list.length} stored ships from ${SaratogaUtil.shipFilePath()}`);
+        this.saratoga.emit('debug', `Loaded ${this._equipCache.list.length} stored equipments from ${SaratogaUtil.equipFilePath()}`);
     }
 
     loadShipsCache(rawShips) {
+        if (!rawShips) return;
+        rawShips = Object.values(rawShips);
+        if (!rawShips.length) return;
         this.clearShipsCache();
-        this._shipCache = Object.values(rawShips);
+        this._shipCache = new Fuse(rawShips, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr' ], threshold: 0.4 });
     }
 
     loadEquipmentsCache(rawEquips) {
+        if (!rawEquips) return;
+        rawEquips = Object.values(rawEquips);
+        if (!rawEquips.length) return;
         this.clearEquipmentsCache();
-        this._equipCache = Object.values(rawEquips);
+        this._equipCache = new Fuse(rawEquips, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr' ], threshold: 0.4 });
     }
 
     clearShipsCache() {
-        if (Array.isArray(this._shipCache)) this._shipCache.length = 0;
+        this._shipCache = null;
     }
 
     clearEquipmentsCache() {
-        if (Array.isArray(this._equipCache)) this._equipCache.length = 0;
+        this._equipCache = null;
     }
 
     updateShipsData(data) {

@@ -3,10 +3,30 @@ const SaratogaUtil = require('../util/SaratogaUtil');
 const SaratogaValidator = require('./SaratogaValidator');
 
 class SaratogaUpdater {
-    constructor(store, saratoga) {
-        this.saratoga = saratoga;
+    constructor(store) {
         this.store = store;
         this.dataDirReady = false;
+        this.cronUpdate = null;
+    }
+
+    get saratoga() {
+        return this.store.saratoga;
+    }
+
+    _startCronUpdate() {
+        if (!this.saratoga._options.notifyForNewUpdates) return;
+        if (!this.cronUpdate) this.saratoga.emit('debug', 'Notify for new updates is enabled, will check every one hour for updates');
+        if (this.cronUpdate) {
+            clearInterval(this.cronUpdate);
+            this.cronUpdate = null;
+        }
+        this.cronUpdate = setInterval(() => {
+            this.checkForUpdate()
+                .then((data) => {
+                    if (data.shipUpdateAvailable || data.equipmentUpdateAvailable) this.saratoga.emit('updateAvailable', data);
+                })
+                .catch((error) => this.saratoga.emit('error', error));
+        }, 3600000);
     }
 
     // a sync method to avoid accessing files that doesn't exist
@@ -20,7 +40,7 @@ class SaratogaUpdater {
         this.store.loadEquipmentsCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.equipFilePath())));
         this.dataDirReady = true;
     }
-    
+
     async updateDataAndCache() {
         await this.updateLocalData();
         await this.updateCache();

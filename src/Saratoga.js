@@ -1,19 +1,20 @@
+const EventEmitter = require('events');
 const SaratogaStore = require('./store/SaratogaStore');
 
-class Saratoga {
-    constructor() {
+class Saratoga extends EventEmitter {
+    constructor(options = { notifyForNewUpdates: false }) {
+        super();
         this.store = new SaratogaStore(this);
-        this.store.updater.startUpCheck();
-        this.store.updateOnFirstStartUp();
+        Object.defineProperty(this, '_options', { value: options });
     }
 
     get updater() {
         const { updateDataAndCache, checkForUpdate, updateLocalData, updateCache } = this.store.updater;
-        return { 
-            updateDataAndCache: updateDataAndCache.bind(this.store.updater), 
-            checkForUpdate: checkForUpdate.bind(this.store.updater), 
-            updateLocalData: updateLocalData.bind(this.store.updater), 
-            updateCache: updateCache.bind(this.store.updater) 
+        return {
+            updateDataAndCache: updateDataAndCache.bind(this.store.updater),
+            checkForUpdate: checkForUpdate.bind(this.store.updater),
+            updateLocalData: updateLocalData.bind(this.store.updater),
+            updateCache: updateCache.bind(this.store.updater)
         };
     }
 
@@ -26,7 +27,7 @@ class Saratoga {
         return this.store.ships;
     }
 
-    get equipments() {  
+    get equipments() {
         if (!this.ready) return null;
         return this.store.equipments;
     }

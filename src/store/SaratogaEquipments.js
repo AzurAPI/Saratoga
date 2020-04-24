@@ -1,34 +1,33 @@
 class SaratogaEquipments {
     constructor(store) {
-        this.store = store;
+        Object.defineProperty(this, '_store', { value: store, writable: false });
     }
 
     get cache() {
-        return this.store._equipCache;
+        if (!this._store._equipCache) return null;
+        return this._store._equipCache;
+    }
+
+    get rawCache() {
+        if (!this.cache) return null;
+        return this.cache.list;
     }
 
     getAllByCategory(category) {
-        return this.cache.filter(d => d.category === category);
+        if (!this.rawCache) return null;
+        return this.rawCache.filter(d => d.category === category);
     }
 
     getAllByNationality(nationality) {
-        return this.cache.filter(d => d.nationality === nationality);
+        if (!this.rawCache) return null;
+        return this.rawCache.filter(d => d.nationality === nationality);
     }
 
-    getByEnglishName(name) {
-        return this.cache.find(d => d.names.en === name);
-    }
-
-    getByChineseName(name) {
-        return this.cache.find(d => d.names.cn === name);
-    }
-
-    getByJapaneseName(name) {
-        return this.cache.find(d => d.names.jp === name);
-    }
-
-    getByKoreanName(name) {
-        return this.cache.find(d => d.names.kr === name);
+    searchByEquipmentName(name) {
+        if (!this.cache) return null;
+        const possibleEquipments = this.cache.search(name, { limit: 10 });
+        if (!possibleEquipments.length) return null;
+        return possibleEquipments;
     }
 }
 module.exports = SaratogaEquipments;
