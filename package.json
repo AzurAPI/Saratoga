@@ -21,6 +21,7 @@
     "url": "https://github.com/AzurAPI/Saratoga"
   },
   "dependencies": {
+    "docma": "^3.2.2",
     "fuse.js": "^5.2.3",
     "node-fetch": "latest"
   },

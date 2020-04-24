@@ -4,12 +4,39 @@ const SaratogaShips = require('./SaratogaShips');
 const SaratogaEquipments = require('./SaratogaEquipments');
 const SaratogaUtil = require('../util/SaratogaUtil');
 
+/**
+ * Saratoga, the starting point of this API
+ * @class SaratogaStore
+ */
 class SaratogaStore {
+    /**
+     * @param  {Saratoga} saratoga The saratoga class that generated this instance
+     */
     constructor(saratoga) {
+        /**
+         * The saratoga instance that generated this instance
+         * @type {Saratoga}
+         */
         this.saratoga = saratoga;
+        /**
+         * Ship related getters for this store
+         * @type {SaratogaShips}
+         */
         this.ships = new SaratogaShips(this);
+        /**
+         * Equipment related getters for this store
+         * @type {SaratogaEquipments}
+         */
         this.equipments = new SaratogaEquipments(this);
+        /**
+         * Updater Class for the local data for this store
+         * @type {SaratogaUpdater}
+         */
         this.updater = new SaratogaUpdater(this);
+        /**
+         * If this store is already ready to operate
+         * @type {Boolean}
+         */
         this.ready = false;
 
         Object.defineProperty(this, '_shipCache', { value: null, writable: true });

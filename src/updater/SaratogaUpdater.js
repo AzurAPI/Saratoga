@@ -2,13 +2,36 @@ const Fetch = require('node-fetch');
 const SaratogaUtil = require('../util/SaratogaUtil');
 const SaratogaValidator = require('./SaratogaValidator');
 
+/**
+ * Manages the local data & cache updates
+ * @class SaratogaUpdater
+ */
 class SaratogaUpdater {
+    /**
+     * @param  {SaratogaStore} store The updater instance that generated this instance
+     */
     constructor(store) {
+        /**
+         * The updater instance that generated this instance
+         * @type {SaratogaStore}
+         */
         this.store = store;
+        /**
+         * If the data directory of this updater is ready to operate
+         * @type {Boolean}
+         */
         this.dataDirReady = false;
+        /**
+         * The cron update checker which is responsible for Saratoga#updateAvailable event
+         * @type {?Timeout}
+         */
         this.cronUpdate = null;
     }
 
+    /**
+     * The saratoga instance that generated this instance
+     * @type {Saratoga}
+     */
     get saratoga() {
         return this.store.saratoga;
     }
@@ -29,7 +52,6 @@ class SaratogaUpdater {
         }, 3600000);
     }
 
-    // a sync method to avoid accessing files that doesn't exist
     startUpCheck() {
         if (this.dataDirReady) return;
         if (!SaratogaUtil.existSync(SaratogaUtil.folderDataPath())) SaratogaUtil.createDirectorySync(SaratogaUtil.folderDataPath());
@@ -41,11 +63,27 @@ class SaratogaUpdater {
         this.dataDirReady = true;
     }
 
+    /**
+     * Updates the Local Files & Cached Data in one method, good for single process scenarios as it's easy. Not for multi sharded programs that has its own Saratoga instance per shard.
+     * @memberof SaratogaUpdater
+     * @returns {Promise<void>}
+     */
     async updateDataAndCache() {
         await this.updateLocalData();
         await this.updateCache();
     }
 
+    /**
+     * Checks if there is new updates for ship or equipment data
+     * @memberof SaratogaUpdater
+     * @returns {Promise<Object>}
+     * @example
+     * const api = new Saratoga();
+     * api.updater.checkForUpdate()
+     *   .then((response) => {
+     *       if (response.shipUpdateAvailable || response.equipmentUpdateAvailable) console.log('update available');
+     *   })
+     */
     async checkForUpdate() {
         const dataValidator = new SaratogaValidator();
         await dataValidator.fetch();
@@ -54,6 +92,11 @@ class SaratogaUpdater {
         return { shipUpdateAvailable, equipmentUpdateAvailable };
     }
 
+    /**
+     * Updates the Local Files of Saratoga if there is an update
+     * @memberof SaratogaUpdater
+     * @returns {Promise<void>}
+     */
     async updateLocalData() {
         const dataValidator = new SaratogaValidator();
         await dataValidator.fetch();
@@ -73,6 +116,11 @@ class SaratogaUpdater {
         }
     }
 
+    /**
+     * Updates the Cached Data, loaded from the local files of Saratoga
+     * @memberof SaratogaUpdater
+     * @returns {Promise<void>}
+     */
     async updateCache() {
         this.store.loadShipsCache(await this.fetchShipsFromLocal());
         this.store.loadEquipmentsCache(await this.fetchEquipmentsFromLocal());
