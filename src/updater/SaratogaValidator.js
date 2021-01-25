@@ -49,7 +49,8 @@ class SaratogaValidator {
 
     needsUpdate() {
         //return !this.local[this.type] || this.local[this.type]['version-number'] !== this.remote[this.type]['version-number'] || this.local[this.type]['last-data-refresh-date'] !== this.remote[this.type]['last-data-refresh-date'];
-        return this.local === this.remote ? true : false;
+        if (this.local === this.remote) return true;
+        return false;
     }
 
     updateVersionFile() {

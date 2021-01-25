@@ -75,9 +75,9 @@ class SaratogaStore {
 
     async updateOnFirstStartUp() {
         if (this.ready) return;
-        let update = await this.updater.checkForUpdate();
-        update = update.shipUpdateAvailable || update.equipmentUpdateAvailable;
-        if (update && (!this._shipCache || !this._equipCache)) await this.updater.updateDataAndCache();
+        const update = await this.updater.checkForUpdate();
+        //update = update.shipUpdateAvailable || update.equipmentUpdateAvailable;
+        if (update || (!this._shipCache || !this._equipCache)) await this.updater.updateDataAndCache();
         this.saratoga.emit('debug', `Loaded ${this._shipCache.list.length} stored ships from ${SaratogaUtil.shipFilePath()}`);
         this.saratoga.emit('debug', `Loaded ${this._equipCache.list.length} stored equipments from ${SaratogaUtil.equipFilePath()}`);
     }
