@@ -90,5 +90,21 @@ class SaratogaShips {
         if (!possibleShips.length) return null;
         return possibleShips;
     }
+    /**
+     * Custom filter for ship data
+     * @param {requestCallback} callback the callback that handles the response
+     */
+    filter(callback) {
+        if (!this.rawCache) return null;
+        return this.rawCache.filter(callback);
+    }
+    /**
+     * Custom search for data in Fuse instance
+     * @param {any} options Fuse search options
+     */
+    search(options) {
+        if (!this.rawCache) return null;
+        return this.cache.search(options);
+    }
 }
 module.exports = SaratogaShips;

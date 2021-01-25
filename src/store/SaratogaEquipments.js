@@ -55,5 +55,21 @@ class SaratogaEquipments {
         if (!possibleEquipments.length) return null;
         return possibleEquipments;
     }
+    /**
+     * Custom filter for equipment data
+     * @param {requestCallback} callback the callback that handles the response
+     */
+    filter(callback) {
+        if (!this.rawCache) return null;
+        return this.rawCache.filter(callback);
+    }
+    /**
+     * Custom search for data in Fuse instance
+     * @param {any} options Fuse search options
+     */
+    search(options) {
+        if (!this.rawCache) return null;
+        return this.cache.search(options);
+    }
 }
 module.exports = SaratogaEquipments;
