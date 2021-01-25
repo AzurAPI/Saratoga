@@ -4,7 +4,8 @@
   "description": "Open Source Azur Lane Local Database",
   "main": "index.js",
   "scripts": {
-    "test": "node ./tests/Client.js"
+    "test": "node ./tests/Client.js",
+    "jest": "jest"
   },
   "keywords": [
     "api",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "docma": "^3.2.2",
-    "eslint": "^6.8.0"
+    "eslint": "^6.8.0",
+    "jest": "^26.6.3"
   }
 }
