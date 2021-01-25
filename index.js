@@ -21,6 +21,21 @@
  * @external Equipment
  * @see {@link https://github.com/AzurAPI/Saratoga/wiki/More-Get-Methods#equipment-getters}
  */
+/**
+ * Chapter Data
+ * @external Chapter
+ * @see {@link https://github.com/AzurAPI/Saratoga/wiki/More-Get-Methods#equipment-getters}
+ */
+/**
+ * Voiceline Data
+ * @external Voiceline
+ * @see {@link https://github.com/AzurAPI/Saratoga/wiki/More-Get-Methods#equipment-getters}
+ */
+/**
+ * Barrage Data
+ * @external Barrage
+ * @see {@link https://github.com/AzurAPI/Saratoga/wiki/More-Get-Methods#equipment-getters}
+ */
 
 module.exports = {
     Saratoga: require('./src/Saratoga'),
