@@ -29,6 +29,21 @@ class SaratogaStore {
          */
         this.equipments = new SaratogaEquipments(this);
         /**
+         * Chapters related getters for this store
+         * @type {SaratogaChapters}
+         */
+        // this.chapters = new SaratogaChapters TODO
+        /**
+         * Voiceline related getters for this store
+         * @type {SaratogaVoicelines}
+         */
+        // this.voicelines = new SaratogaVOicelines TODO
+        /**
+         * Barrage related getters for this store
+         * @type {SaratogaBarrages}
+         */
+        // this.barrages = new SaratogaBarrages TODO
+        /**
          * Updater Class for the local data for this store
          * @type {SaratogaUpdater}
          */
@@ -41,6 +56,9 @@ class SaratogaStore {
 
         Object.defineProperty(this, '_shipCache', { value: null, writable: true });
         Object.defineProperty(this, '_equipCache', { value: null, writable: true  });
+        Object.defineProperty(this, '_chapterCache', { value: null, writable: true  });
+        Object.defineProperty(this, '_voicelineCache', { value: null, writable: true  });
+        Object.defineProperty(this, '_barrageCache', { value: null, writable: true  });
 
         this.updater.startUpCheck();
         this.updateOnFirstStartUp()
@@ -69,7 +87,7 @@ class SaratogaStore {
         rawShips = Object.values(rawShips);
         if (!rawShips.length) return;
         this.clearShipsCache();
-        this._shipCache = new Fuse(rawShips, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr' ], threshold: 0.4 });
+        this._shipCache = new Fuse(rawShips, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr', 'names.code' ], threshold: 0.4 });
     }
 
     loadEquipmentsCache(rawEquips) {
@@ -80,12 +98,46 @@ class SaratogaStore {
         this._equipCache = new Fuse(rawEquips, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr' ], threshold: 0.4 });
     }
 
+    loadChapterCache(rawChapters) {
+        if (!rawChapters) return;
+        rawChapters = Object.values(Object.values(rawChapters));
+        if (!rawChapters.length) return;
+        this.clearChapterCache();
+        this._chapterCache = new Fuse(rawChapters, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr' ], threshold: 0.4 });
+    }
+
+    loadVoicelineCache(rawVoicelines) {
+        if (!rawVoicelines) return;
+        this.clearVoicelineCache();
+        this._voicelineCache = rawVoicelines;
+    }
+
+    loadBarrageCache(rawBarrages) {
+        if (!rawBarrages) return;
+        rawBarrages = Object.values(rawBarrages);
+        if (!rawBarrages.length) return;
+        this.clearBarrageCache();
+        this._barrageCache = new Fuse(rawBarrages, { keys: [ 'id', 'name' ], threshold: 0.4 });
+    }
+
     clearShipsCache() {
         this._shipCache = null;
     }
 
     clearEquipmentsCache() {
         this._equipCache = null;
+    }
+
+    clearChapterCache() {
+        this._chapterCache = null;
+    }
+
+    clearVoicelineCache() {
+        this._voicelineCache = null;
+    }
+
+    clearBarrageCache() {
+        this._barrageCache = null;
     }
 
     updateShipsData(data) {
@@ -96,12 +148,36 @@ class SaratogaStore {
         return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
     }
 
+    updateChapterData(data) {
+        return SaratogaUtil.writeFile(SaratogaUtil.chapterFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
+    }
+
+    updateVoicelineData(data) {
+        return SaratogaUtil.writeFile(SaratogaUtil.voicelineFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
+    }
+
+    updateBarrageData(data) {
+        return SaratogaUtil.writeFile(SaratogaUtil.barrageFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
+    }
+
     clearShipsData() {
         return SaratogaUtil.writeFile(SaratogaUtil.shipFilePath(), JSON.stringify({}));
     }
 
     clearEquipmentsData() {
         return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath(), JSON.stringify({}));
+    }
+
+    clearChapterData() {
+        return SaratogaUtil.writeFile(SaratogaUtil.chapterFilePath(), JSON.stringify({}));
+    }
+
+    clearVoicelineData() {
+        return SaratogaUtil.writeFile(SaratogaUtil.voicelineFilePath(), JSON.stringify({}));
+    }
+
+    clearBarrageData() {
+        return SaratogaUtil.writeFile(SaratogaUtil.barrageFilePath(), JSON.stringify({}));
     }
 }
 module.exports = SaratogaStore;

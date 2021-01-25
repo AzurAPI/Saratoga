@@ -46,7 +46,7 @@ class SaratogaUpdater {
         this.cronUpdate = setInterval(() => {
             this.checkForUpdate()
                 .then((data) => {
-                    if (data.shipUpdateAvailable || data.equipmentUpdateAvailable) this.saratoga.emit('updateAvailable', data);
+                    if (/*data.shipUpdateAvailable || data.equipmentUpdateAvailable()*/data) this.saratoga.emit('updateAvailable', data);
                 })
                 .catch((error) => this.saratoga.emit('error', error));
         }, 3600000);
@@ -60,6 +60,9 @@ class SaratogaUpdater {
         }
         this.store.loadShipsCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.shipFilePath())));
         this.store.loadEquipmentsCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.equipFilePath())));
+        this.store.loadChapterCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.chapterFilePath())));
+        this.store.loadVoicelineCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.voicelineFilePath())));
+        this.store.loadBarrageCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.barrageFilePath())));
         this.dataDirReady = true;
     }
 
@@ -87,9 +90,10 @@ class SaratogaUpdater {
     async checkForUpdate() {
         const dataValidator = new SaratogaValidator();
         await dataValidator.fetch();
-        const shipUpdateAvailable = dataValidator.setType('ships').needsUpdate();
-        const equipmentUpdateAvailable = dataValidator.setType('equipments').needsUpdate();
-        return { shipUpdateAvailable, equipmentUpdateAvailable };
+        //const shipUpdateAvailable = dataValidator.setType('ships').needsUpdate();
+        //const equipmentUpdateAvailable = dataValidator.setType('equipments').needsUpdate();
+        //return { shipUpdateAvailable, equipmentUpdateAvailable };
+        return dataValidator.needsUpdate();
     }
 
     /**
@@ -103,16 +107,23 @@ class SaratogaUpdater {
         if (dataValidator.noLocalData()) {
             await this.updateStoredShips();
             await this.updateStoredEquipments();
+            await this.updateStoredChapters();
+            await this.updateStoredVoicelines();
+            await this.updateStoredBarrages();
             await dataValidator.updateVersionFile();
         } else {
-            if (dataValidator.setType('ships').needsUpdate()) {
+            if (dataValidator/*.setType('ships')*/.needsUpdate()) {
                 await this.updateStoredShips();
+                await this.updateStoredEquipments();
+                await this.updateStoredChapters();
+                await this.updateStoredVoicelines();
+                await this.updateStoredBarrages();
                 await dataValidator.updateVersionFile();
             }
-            if (dataValidator.setType('equipments').needsUpdate()) {
+            /*if (dataValidator.setType('equipments').needsUpdate()) {
                 await this.updateStoredEquipments();
                 await dataValidator.updateVersionFile();
-            }
+            }*/
         }
     }
 
@@ -136,6 +147,21 @@ class SaratogaUpdater {
         await this.store.updateEquipmentsData(await this.fetchEquipmentsFromRemote());
     }
 
+    async updateStoredChapters() {
+        await this.store.clearChapterData();
+        await this.store.updateChapterData(await this.fetchChaptersFromRemote());
+    }
+
+    async updateStoredVoicelines() {
+        await this.store.clearVoicelineData();
+        await this.store.updateVoicelineData(await this.fetchVoicelinesFromRemote());
+    }
+
+    async updateStoredBarrages() {
+        await this.store.clearBarrageData();
+        await this.store.updateBarrageData(await this.fetchBarragesFromRemote());
+    }
+
     fetchShipsFromRemote() {
         return Fetch(SaratogaUtil.latestShipDataLink()).then(data => data.text());
     }
@@ -144,12 +170,36 @@ class SaratogaUpdater {
         return Fetch(SaratogaUtil.latestEquipmentDataLink()).then(data => data.text());
     }
 
+    fetchChaptersFromRemote() {
+        return Fetch(SaratogaUtil.latestChapterDataLink()).then(data => data.text());
+    }
+
+    fetchVoicelinesFromRemote() {
+        return Fetch(SaratogaUtil.latestVoicelineDataLink()).then(data => data.text());
+    }
+
+    fetchBarragesFromRemote() {
+        return Fetch(SaratogaUtil.latestBarrageDataLink()).then(data => data.text());
+    }
+
     fetchShipsFromLocal() {
         return SaratogaUtil.readFile(SaratogaUtil.shipFilePath()).then(data => JSON.parse(data));
     }
 
     fetchEquipmentsFromLocal() {
         return SaratogaUtil.readFile(SaratogaUtil.equipFilePath()).then(data => JSON.parse(data));
+    }
+
+    fetchChaptersFromLocal() {
+        return SaratogaUtil.readFile(SaratogaUtil.chapterFilePath()).then(data => JSON.parse(data));
+    }
+
+    fetchVoicelinesFromLocal() {
+        return SaratogaUtil.readFile(SaratogaUtil.voicelineFilePath()).then(data => JSON.parse(data));
+    }
+
+    fetchBarragesFromLocal() {
+        return SaratogaUtil.readFile(SaratogaUtil.barrageFilePath()).then(data => JSON.parse(data));
     }
 }
 module.exports = SaratogaUpdater;

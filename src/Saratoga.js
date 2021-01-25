@@ -85,5 +85,29 @@ class Saratoga extends EventEmitter {
         if (!this.ready) return null;
         return this.store.equipments;
     }
+    /**
+     * Chapters related getters for this store
+     * @type {SaratogaChapters}
+     */
+    get chapters() {
+        if (!this.ready) return null;
+        return this.store.chapters;
+    }
+    /**
+     * Voiceline related getters for this store
+     * @type {SaratogaVoicelines}
+     */
+    get voicelines() {
+        if (!this.ready) return null;
+        return this.store.voicelines;
+    }
+    /**
+     * Barrage related getters for this store
+     * @type {SaratogaBarrages}
+     */
+    get barrages() {
+        if (!this.ready) return null;
+        return this.store.barrages;
+    }
 }
 module.exports = Saratoga;
