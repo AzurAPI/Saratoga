@@ -55,7 +55,7 @@ class SaratogaUpdater {
     startUpCheck() {
         if (this.dataDirReady) return;
         if (!SaratogaUtil.existSync(SaratogaUtil.folderDataPath())) SaratogaUtil.createDirectorySync(SaratogaUtil.folderDataPath());
-        for (const prop of ['versionFilePath', 'shipFilePath', 'equipFilePath']) {
+        for (const prop of ['versionFilePath', 'shipFilePath', 'equipFilePath', 'chapterFilePath', 'voicelineFilePath', 'barrageFilePath']) {
             if (!SaratogaUtil.existSync( SaratogaUtil[prop]() )) SaratogaUtil.writeFileSync(SaratogaUtil[prop](), JSON.stringify({}));
         }
         this.store.loadShipsCache(JSON.parse(SaratogaUtil.readFileSync(SaratogaUtil.shipFilePath())));
