@@ -1,6 +1,8 @@
 const Fuse = require('fuse.js');
 const SaratogaUpdater = require('../updater/SaratogaUpdater');
+const ShipExtFilter = require('./SaratogaShips');
 const SaratogaShips = require('./SaratogaShips');
+const ShipExtAll = require('./SaratogaShips');
 const SaratogaEquipments = require('./SaratogaEquipments');
 const SaratogaUtil = require('../util/SaratogaUtil');
 
@@ -23,6 +25,8 @@ class SaratogaStore {
          * @type {SaratogaShips}
          */
         this.ships = new SaratogaShips(this);
+        this.ships.all = new ShipExtAll(this);
+        this.ships.sort = new ShipExtFilter(this);
         /**
          * Equipment related getters for this store
          * @type {SaratogaEquipments}

@@ -26,7 +26,7 @@ class SaratogaEquipments {
      * @memberof SaratogaEquipments
      * @returns {Array<Equipment> | null}
      */
-    getAllByCategory(category) {
+    category(category) {
         if (!this.rawCache) return null;
         return this.rawCache.filter(d => d.category === category);
     }
@@ -37,7 +37,7 @@ class SaratogaEquipments {
      * @memberof SaratogaEquipments
      * @returns {Array<Equipment> | null}
      */
-    getAllByNationality(nationality) {
+    nationality(nationality) {
         if (!this.rawCache) return null;
         return this.rawCache.filter(d => d.nationality === nationality);
     }
@@ -45,16 +45,42 @@ class SaratogaEquipments {
     /**
      * Searches for a specific equipment. (EN, CN, JP, KR names are supported)
      * @param {string} name name of the equipment you want to search for
+     * @param {string} language optional language to search by
      * @param {number} [limit=10] limit of the search results
      * @memberof SaratogaEquipments
      * @returns {Equipment | null}
      */
-    searchByEquipmentName(name, limit = 10) {
+    name(name, language, limit = 10) {
+        if (language) {
+            if (!this.rawCache) return null;
+            let lang;
+            switch(language) {
+                case 'en':
+                    lang = this.cache.names.en;
+                    break;
+                case 'cn':
+                    lang = this.cache.names.cn;
+                    break;
+                case 'jp':
+                    lang = this.cache.names.jp;
+                    break;
+            }
+            return lang.find(d => d.includes(name));
+        }
         if (!this.cache) return null;
         const possibleEquipments = this.cache.search(name, { limit });
         if (!possibleEquipments.length) return null;
         return possibleEquipments;
     }
+
+    /**
+     * Get an unfiltered equipment list
+     */
+    all() {
+        if (!this.rawCache) return null;
+        return this.rawCache;
+    }
+
     /**
      * Custom filter for equipment data
      * @param {requestCallback} callback the callback that handles the response
