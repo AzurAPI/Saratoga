@@ -5,6 +5,8 @@ const SaratogaShips = require('./SaratogaShips');
 const ShipExtAll = require('./SaratogaShips');
 const SaratogaEquipments = require('./SaratogaEquipments');
 const SaratogaUtil = require('../util/SaratogaUtil');
+const LegacyShips = require('./LegacyShips');
+const LegacyEquipments = require('./LegacyEquipments');
 
 /**
  * Saratoga, the starting point of this API
@@ -47,6 +49,11 @@ class SaratogaStore {
          * @type {SaratogaBarrages}
          */
         // this.barrages = new SaratogaBarrages TODO
+        /**
+         * Legacy API instances
+         */
+        this.legacyShips = new LegacyShips(this)
+        this.legacyEquipments = new LegacyEquipments(this)
         /**
          * Updater Class for the local data for this store
          * @type {SaratogaUpdater}

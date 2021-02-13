@@ -109,5 +109,21 @@ class Saratoga extends EventEmitter {
         if (!this.ready) return null;
         return this.store.barrages;
     }
+    /**
+     * Azur Lane's Ship related getter methods with LegacyAPI
+     * @type {SaratogaLegacyShips}
+     */
+    get legacyShips() {
+        if (!this.ready) return null;
+        return this.store.legacyShips;
+    }
+    /**
+     * Azur Lane's Equipment related getter methods with LegacyAPI
+     * @type {SaratogaLegacyEquipments}
+     */
+    get legacyEquipments() {
+        if (!this.ready) return null;
+        return this.store.legacyEquipments;
+    }
 }
 module.exports = Saratoga;
