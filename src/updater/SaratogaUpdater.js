@@ -67,6 +67,7 @@ class SaratogaUpdater {
     }
 
     /**
+     * 全てを更新
      * Updates the Local Files & Cached Data in one method, good for single process scenarios as it's easy. Not for multi sharded programs that has its own Saratoga instance per shard.
      * @memberof SaratogaUpdater
      * @returns {Promise<void>}
@@ -77,6 +78,7 @@ class SaratogaUpdater {
     }
 
     /**
+     * アップデートの確認
      * Checks if there is new updates for ship or equipment data
      * @memberof SaratogaUpdater
      * @returns {Promise<Object>}
@@ -97,6 +99,7 @@ class SaratogaUpdater {
     }
 
     /**
+     * ファイルの更新
      * Updates the Local Files of Saratoga if there is an update
      * @memberof SaratogaUpdater
      * @returns {Promise<void>}
@@ -128,6 +131,7 @@ class SaratogaUpdater {
     }
 
     /**
+     * キャッシュの更新
      * Updates the Cached Data, loaded from the local files of Saratoga
      * @memberof SaratogaUpdater
      * @returns {Promise<void>}

@@ -2,6 +2,7 @@ const EventEmitter = require('events');
 const SaratogaStore = require('./store/SaratogaStore');
 
 /**
+ * 本APIの出発点
  * Saratoga, the starting point of this API
  * @class Saratoga
  * @extends {EventEmitter}
@@ -13,6 +14,7 @@ class Saratoga extends EventEmitter {
     constructor(options = { notifyForNewUpdates: false }) {
         super();
         /**
+         * キャッシュデータの管理
          * Contains methods and props for managing cached data
          * @type {SaratogaStore}
          */
@@ -21,12 +23,14 @@ class Saratoga extends EventEmitter {
     }
 
     /**
+     * デバッグデータがあるときに発せられる
      * Emitted when there is a debug data
      * @event Saratoga#debug
-     * @param {string} message Debug message
+     * @param {string} message Debug message 資料
      * @memberof Saratoga
      */
     /**
+     * エラーが発生したときに発せられる
      * Emitted when there is a pesky error
      * @event Saratoga#error
      * @param {Error} error The error encountered.
@@ -35,6 +39,7 @@ class Saratoga extends EventEmitter {
      * Saratoga.on('error', console.error);
      */
     /**
+     * 更新があったときに発せられる
      * Emitted when there is an update available for local data. Only available when Saratoga is initialized with notifyForNewUpdates set to true
      * @event Saratoga#updateAvailable
      * @param {Object} data What data needs updating
@@ -47,12 +52,14 @@ class Saratoga extends EventEmitter {
      * })
      */
     /**
+     * 準備ができたときに発せられる
      * Emitted when Saratoga is ready
      * @event Saratoga#ready
      * @memberof Saratoga
      */
 
     /**
+     * アップデータ
      * Contains methods for updating Saratoga's local data & cache
      * @type {SaratogaUpdater}
      */
@@ -61,6 +68,7 @@ class Saratoga extends EventEmitter {
     }
 
     /**
+     * 状態
      * If Saratoga is ready to operate
      * @type {Boolean}
      */
@@ -69,6 +77,7 @@ class Saratoga extends EventEmitter {
     }
 
     /**
+     * 船のデータを取得する
      * Azur Lane's Ship related getter methods
      * @type {SaratogaShips}
      */
@@ -78,6 +87,7 @@ class Saratoga extends EventEmitter {
     }
 
     /**
+     * 装置のデータを取得する
      * Azur Lane's Equipment related getter methods
      * @type {SaratogaEquipments}
      */
@@ -86,6 +96,7 @@ class Saratoga extends EventEmitter {
         return this.store.equipments;
     }
     /**
+     * チャプターのデータを取得する
      * Chapters related getters for this store
      * @type {SaratogaChapters}
      */
@@ -94,6 +105,7 @@ class Saratoga extends EventEmitter {
         return this.store.chapters;
     }
     /**
+     * ボイスラインのデータを取得する
      * Voiceline related getters for this store
      * @type {SaratogaVoicelines}
      */
@@ -102,6 +114,7 @@ class Saratoga extends EventEmitter {
         return this.store.voicelines;
     }
     /**
+     * 連打のデータを取得する
      * Barrage related getters for this store
      * @type {SaratogaBarrages}
      */
@@ -110,7 +123,8 @@ class Saratoga extends EventEmitter {
         return this.store.barrages;
     }
     /**
-     * Azur Lane's Ship related getter methods with LegacyAPI
+     * 旧船のデータを取得する
+     * Azur Lane's Ship related getter methods with legacy API
      * @type {SaratogaLegacyShips}
      */
     get legacyShips() {
@@ -118,7 +132,8 @@ class Saratoga extends EventEmitter {
         return this.store.legacyShips;
     }
     /**
-     * Azur Lane's Equipment related getter methods with LegacyAPI
+     * 旧装置のデータを取得する
+     * Azur Lane's Equipment related getter methods with legacy API
      * @type {SaratogaLegacyEquipments}
      */
     get legacyEquipments() {
