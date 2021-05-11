@@ -44,3 +44,4 @@ saratoga.on('error', console.error);
 
 ## Maintainer
 - [@Saya#0113](https://github.com/Deivu)
+- [@Rattley#1529](https://github.com/0t4u)
