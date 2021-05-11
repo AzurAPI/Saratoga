@@ -11,12 +11,18 @@ const promise = {
 const remoteLinks = {
     version: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/version-info.json',
     ships: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/ships.json',
-    equipment: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/equipments.json'
+    equipment: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/equipments.json',
+    chapter: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/chapters.json',
+    voiceline: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/voice_lines.json',
+    barrage: 'https://raw.githubusercontent.com/AzurAPI/azurapi-js-setup/master/barrage.json'
 };
 
 const dataFilePath = {
     ship: join(__dirname, '../data', 'ship.json'),
-    equipment: join(__dirname, '../data', 'equipment.json')
+    equipment: join(__dirname, '../data', 'equipment.json'),
+    chapter: join(__dirname, '../data', 'chapter.json'),
+    voiceline: join(__dirname, '../data', 'voiceline.json'),
+    barrage: join(__dirname, '../data', 'barrage.json')
 };
 
 const versionFilePath = join(__dirname, '../data', 'version.json');
@@ -43,6 +49,18 @@ class SaratogaUtil {
         return dataFilePath.equipment;
     }
 
+    static chapterFilePath() {
+        return dataFilePath.chapter;
+    }
+
+    static voicelineFilePath() {
+        return dataFilePath.voiceline;
+    }
+
+    static barrageFilePath() {
+        return dataFilePath.barrage;
+    }
+
     static latestVersionDataLink() {
         return remoteLinks.version;
     }
@@ -53,6 +71,18 @@ class SaratogaUtil {
 
     static latestEquipmentDataLink() {
         return remoteLinks.equipment;
+    }
+
+    static latestChapterDataLink() {
+        return remoteLinks.chapter;
+    }
+
+    static latestVoicelineDataLink() {
+        return remoteLinks.voiceline;
+    }
+
+    static latestBarrageDataLink() {
+        return remoteLinks.barrage;
     }
 
     static existSync(path) {

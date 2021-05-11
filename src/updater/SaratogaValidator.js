@@ -9,7 +9,7 @@ class SaratogaValidator {
         this.remote = {};
     }
 
-    setType(name) {
+    /*setType(name) {
         this.type = name;
         return this;
     }
@@ -33,7 +33,7 @@ class SaratogaValidator {
         for (const { type, version } of this.parseShipAndEquipmentVersion('local')) data.downloaded[type] = version;
         for (const { type, version } of this.parseShipAndEquipmentVersion('remote')) data.remote[type] = version;
         return data;
-    }
+    }*/
 
     async fetch() {
         if (!this.fetched) {
@@ -48,7 +48,8 @@ class SaratogaValidator {
     }
 
     needsUpdate() {
-        return !this.local[this.type] || this.local[this.type]['version-number'] !== this.remote[this.type]['version-number'] || this.local[this.type]['last-data-refresh-date'] !== this.remote[this.type]['last-data-refresh-date'];
+        //return !this.local[this.type] || this.local[this.type]['version-number'] !== this.remote[this.type]['version-number'] || this.local[this.type]['last-data-refresh-date'] !== this.remote[this.type]['last-data-refresh-date'];
+        return this.local === this.remote;
     }
 
     updateVersionFile() {

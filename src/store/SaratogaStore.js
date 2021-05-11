@@ -1,39 +1,86 @@
 const Fuse = require('fuse.js');
 const SaratogaUpdater = require('../updater/SaratogaUpdater');
+const ShipExtFilter = require('./SaratogaShips');
 const SaratogaShips = require('./SaratogaShips');
+const ShipExtAll = require('./SaratogaShips');
 const SaratogaEquipments = require('./SaratogaEquipments');
+const SaratogaBarrages = require('./SaratogaBarrages');
 const SaratogaUtil = require('../util/SaratogaUtil');
+const LegacyShips = require('./LegacyShips');
+const LegacyEquipments = require('./LegacyEquipments');
 
 /**
+ * 本APIの出発点
  * Saratoga, the starting point of this API
  * @class SaratogaStore
  */
 class SaratogaStore {
     /**
-     * @param  {Saratoga} saratoga The saratoga class that generated this instance
+     * @param  {Saratoga} saratoga The saratoga class that generated this instance このインスタンスを生成したSaratogaクラス
      */
     constructor(saratoga) {
         /**
+         * このインスタンスを生成したsaratogaインスタンス
          * The saratoga instance that generated this instance
          * @type {Saratoga}
          */
         this.saratoga = saratoga;
         /**
+         * 船に関するゲッター
          * Ship related getters for this store
          * @type {SaratogaShips}
          */
         this.ships = new SaratogaShips(this);
+        this.ships.all = new ShipExtAll(this);
+        this.ships.sort = new ShipExtFilter(this);
         /**
+         * 装置関連ゲッター
          * Equipment related getters for this store
          * @type {SaratogaEquipments}
          */
         this.equipments = new SaratogaEquipments(this);
         /**
+         * チャプター関連のゲッター
+         * Chapters related getters for this store
+         * @type {SaratogaChapters}
+         */
+        // this.chapters = new SaratogaChapters(this)
+        /**
+         * ボイスライン関連ゲッター
+         * Voiceline related getters for this store
+         * @type {SaratogaVoicelines}
+         */
+        // this.voicelines = new SaratogaVoicelines(this)
+        /**
+         * 連打関連ゲッター
+         * Barrage related getters for this store
+         * @type {SaratogaBarrages}
+         */
+        this.barrages = new SaratogaBarrages(this)
+        /**
+         * Barrage関連ゲッター
+         * Legacy API instances
+         */
+        /**
+         * 旧船のAPI
+         * Legacy Ships API
+         * @type {LegacyShips}
+         */
+        this.legacyShips = new LegacyShips(this)
+        /**
+         * 旧装置のAPI
+         * Legacy Equipments API
+         * @type {LegacyEquipments}
+         */
+        this.legacyEquipments = new LegacyEquipments(this)
+        /**
+         * アップデータクラス
          * Updater Class for the local data for this store
          * @type {SaratogaUpdater}
          */
         this.updater = new SaratogaUpdater(this);
         /**
+         * 準備完了状態
          * If this store is already ready to operate
          * @type {Boolean}
          */
@@ -41,6 +88,9 @@ class SaratogaStore {
 
         Object.defineProperty(this, '_shipCache', { value: null, writable: true });
         Object.defineProperty(this, '_equipCache', { value: null, writable: true  });
+        Object.defineProperty(this, '_chapterCache', { value: null, writable: true  });
+        Object.defineProperty(this, '_voicelineCache', { value: null, writable: true  });
+        Object.defineProperty(this, '_barrageCache', { value: null, writable: true  });
 
         this.updater.startUpCheck();
         this.updateOnFirstStartUp()
@@ -57,9 +107,9 @@ class SaratogaStore {
 
     async updateOnFirstStartUp() {
         if (this.ready) return;
-        let update = await this.updater.checkForUpdate();
-        update = update.shipUpdateAvailable || update.equipmentUpdateAvailable;
-        if (update && (!this._shipCache || !this._equipCache)) await this.updater.updateDataAndCache();
+        const update = await this.updater.checkForUpdate();
+        //update = update.shipUpdateAvailable || update.equipmentUpdateAvailable;
+        if (update || (!this._shipCache || !this._equipCache)) await this.updater.updateDataAndCache();
         this.saratoga.emit('debug', `Loaded ${this._shipCache.list.length} stored ships from ${SaratogaUtil.shipFilePath()}`);
         this.saratoga.emit('debug', `Loaded ${this._equipCache.list.length} stored equipments from ${SaratogaUtil.equipFilePath()}`);
     }
@@ -69,7 +119,7 @@ class SaratogaStore {
         rawShips = Object.values(rawShips);
         if (!rawShips.length) return;
         this.clearShipsCache();
-        this._shipCache = new Fuse(rawShips, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr' ], threshold: 0.4 });
+        this._shipCache = new Fuse(rawShips, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr', 'names.code' ], threshold: 0.4 });
     }
 
     loadEquipmentsCache(rawEquips) {
@@ -80,12 +130,46 @@ class SaratogaStore {
         this._equipCache = new Fuse(rawEquips, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr' ], threshold: 0.4 });
     }
 
+    loadChapterCache(rawChapters) {
+        if (!rawChapters) return;
+        rawChapters = Object.values(Object.values(rawChapters));
+        if (!rawChapters.length) return;
+        this.clearChapterCache();
+        this._chapterCache = new Fuse(rawChapters, { keys: [ 'names.en', 'names.cn', 'names.jp', 'names.kr' ], threshold: 0.4 });
+    }
+
+    loadVoicelineCache(rawVoicelines) {
+        if (!rawVoicelines) return;
+        this.clearVoicelineCache();
+        this._voicelineCache = rawVoicelines;
+    }
+
+    loadBarrageCache(rawBarrages) {
+        if (!rawBarrages) return;
+        rawBarrages = Object.values(rawBarrages);
+        if (!rawBarrages.length) return;
+        this.clearBarrageCache();
+        this._barrageCache = new Fuse(rawBarrages, { keys: [ 'name' ], threshold: 0.4 });
+    }
+
     clearShipsCache() {
         this._shipCache = null;
     }
 
     clearEquipmentsCache() {
         this._equipCache = null;
+    }
+
+    clearChapterCache() {
+        this._chapterCache = null;
+    }
+
+    clearVoicelineCache() {
+        this._voicelineCache = null;
+    }
+
+    clearBarrageCache() {
+        this._barrageCache = null;
     }
 
     updateShipsData(data) {
@@ -96,12 +180,36 @@ class SaratogaStore {
         return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
     }
 
+    updateChapterData(data) {
+        return SaratogaUtil.writeFile(SaratogaUtil.chapterFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
+    }
+
+    updateVoicelineData(data) {
+        return SaratogaUtil.writeFile(SaratogaUtil.voicelineFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
+    }
+
+    updateBarrageData(data) {
+        return SaratogaUtil.writeFile(SaratogaUtil.barrageFilePath(), typeof data === 'string' ? data : JSON.stringify(data));
+    }
+
     clearShipsData() {
         return SaratogaUtil.writeFile(SaratogaUtil.shipFilePath(), JSON.stringify({}));
     }
 
     clearEquipmentsData() {
         return SaratogaUtil.writeFile(SaratogaUtil.equipFilePath(), JSON.stringify({}));
+    }
+
+    clearChapterData() {
+        return SaratogaUtil.writeFile(SaratogaUtil.chapterFilePath(), JSON.stringify({}));
+    }
+
+    clearVoicelineData() {
+        return SaratogaUtil.writeFile(SaratogaUtil.voicelineFilePath(), JSON.stringify({}));
+    }
+
+    clearBarrageData() {
+        return SaratogaUtil.writeFile(SaratogaUtil.barrageFilePath(), JSON.stringify({}));
     }
 }
 module.exports = SaratogaStore;
