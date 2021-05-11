@@ -10,7 +10,7 @@ export type Rounds = {
 
 }
 
-export class voiceline {
+export class barrage {
     id: string;
     type: string;
     icon: Url;
